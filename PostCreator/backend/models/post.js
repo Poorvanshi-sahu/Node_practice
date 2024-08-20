@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-    data:{
+    content:{
         type:String
     },
     likes:[
@@ -11,7 +11,8 @@ const postSchema = new mongoose.Schema({
         }
     ],
     time:{
-        type:Date.now()
+        type: Date,
+        default: Date.now
     },
     creator:{
         type:mongoose.Schema.Types.ObjectId,
