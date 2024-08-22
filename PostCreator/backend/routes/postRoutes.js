@@ -4,10 +4,10 @@ const router = express.Router();
 const UserModel = require("../models/user");
 const PostModel = require("../models/post");
 
-router.post("/createPost", isLoggedIn, async (req, res) => {
+router.post("/createPost", isLoggedIn, async (req, res) => {  
   const { content } = req.body;
-
-  const user = await UserModel.findOne({ _id: req.user.userId });
+  try {
+    const user = await UserModel.findOne({ _id: req.user.userId });
 
   const newPost = await PostModel.create({ content, creator: user._id });
 
@@ -16,6 +16,13 @@ router.post("/createPost", isLoggedIn, async (req, res) => {
   await newPost.save();
 
   return res.status(200).json({ message: "Post created", newPost });
+  
+  } catch (error) {
+    console.log("error",error);
+    
+    return res.status(400).json({ error});
+  }
+
 });
 
 router.get("/getAllPosts", isLoggedIn, async (req, res) => {

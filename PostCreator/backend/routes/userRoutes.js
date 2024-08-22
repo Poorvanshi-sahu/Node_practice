@@ -5,29 +5,26 @@ const bcrypt = require("bcrypt");
 const tokenGenerate = require("../utils/generateToken");
 const { isLoggedIn } = require("../middleware/userMiddleware");
 
-router.get("/login",async(req,res)=>{
-    // const {email, password} = req.body;
-
-    let email = "abc@gmail.com"
-    let password = "abc"
+router.post("/login",async(req,res)=>{ 
+    const {email, password} = req.body;
 
     const user = await userModel.findOne({email});
 
     if(!user){
-        return res.status(201).json({"message":"Something went wrong"})
+        return res.status(201).json({"message":"Something went wrong user h"})
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password)
 
     if(!isPasswordMatch){
-        return res.status(201).json({"message":"Something went wrong"})
+        return res.status(201).json({"message":"Something went wrong password galt"})
     }
 
     let token = tokenGenerate(user)
     
     res.cookie("token", token)    
     
-    res.status(200).json({user, token})
+    res.status(200).json({"message":"Login successful", user, token})
 })
 
 router.post("/register",async(req,res)=>{
@@ -55,12 +52,21 @@ router.post("/register",async(req,res)=>{
     
     await user.save();
 
-    res.status(200).json({user, token})
+    return res.status(200).json({user, token})
 })
 
-router.get("/logOut",isLoggedIn,(req,res)=>{
+router.get("/logOut",(req,res)=>{
     res.cookie("token","")
-    res.status(200).json({"message":"Logged out successfully"})
+    return res.status(200).json({"message":"Logged out successfully"})
+})
+
+router.get("/getProfile",isLoggedIn,async(req,res)=>{
+    try {
+        const user = await userModel.findOne({_id:req.user.userId})
+        return res.status(200).json({user})
+    } catch (error) {
+        return res.status(400).json({"error":error})
+    }
 })
 
 module.exports = router
