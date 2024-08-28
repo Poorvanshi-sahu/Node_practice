@@ -30,6 +30,14 @@ router.get("/getAllPosts", isLoggedIn, async (req, res) => {
   return res.status(200).json({ allPosts });
 });
 
+router.get("/getAllPostsOfUser/:id", isLoggedIn, async (req, res) => {
+  const id = req.params.id;
+  const allPosts = await PostModel.find({}).populate("creator")
+  const userPosts = allPosts.filter((post)=>post.creator._id===id)
+  
+  return res.status(200).json({ userPosts});
+});
+
 router.post("/likePost/:postId", isLoggedIn, async (req, res) => {
   const postNumber = req.params.postId;
 

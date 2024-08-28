@@ -5,7 +5,7 @@ import { useMyContext } from '../contextAPI'
 import { toast } from 'sonner'
 
 const Register = () => {
-  const {isLogIn, setLoginHandler} = useMyContext()
+  const {isLogIn, setIsLogIn, setLoggedInUser} = useMyContext()
   console.log( isLogIn);
   const [formData, setFormData] = useState({
     name:"",
@@ -38,7 +38,9 @@ const SubmitFormHandler = async(e)=>{
           position:"top-center"
         })
       }
-      setLoginHandler(token)
+    setLoggedInUser(user) 
+    
+    setIsLogIn(true)
       setFormData({
         name:"",
         username:"",

@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const tokenGenerate = require("../utils/generateToken");
 const { isLoggedIn } = require("../middleware/userMiddleware");
 
-router.post("/login",async(req,res)=>{ 
+router.post("/login",async(req,res)=>{     
     const {email, password} = req.body;
 
     const user = await userModel.findOne({email});
@@ -17,7 +17,7 @@ router.post("/login",async(req,res)=>{
     const isPasswordMatch = await bcrypt.compare(password, user.password)
 
     if(!isPasswordMatch){
-        return res.status(201).json({"message":"Something went wrong password galt"})
+        return res.status(201).json({"message":"Something went wrong"})
     }
 
     let token = tokenGenerate(user)
@@ -60,7 +60,8 @@ router.get("/logOut",(req,res)=>{
     return res.status(200).json({"message":"Logged out successfully"})
 })
 
-router.get("/getProfile",isLoggedIn,async(req,res)=>{
+router.get("/getProfile",isLoggedIn,async(req,res)=>{    
+    
     try {
         const user = await userModel.findOne({_id:req.user.userId})
         return res.status(200).json({user})

@@ -6,13 +6,14 @@ import Post from "../components/Post";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  const { isLogIn, setLoginHandler, isAutheticated } = useMyContext();
+  const { handleLogout, loggesInUser } = useMyContext();
   const [content, setContent] = useState();
   const [allPosts, setAllPosts] = useState([]);
   const [userProfile, setUserProfile] = useState();
 
   const getData = async () => {
-    const response = await axios.get("/api/getAllPosts");
+    const id = loggesInUser.data.user._id;
+    const response = await axios.get(`/api/getAllPostsOfUser/${id}`);
     console.log(response);
     setAllPosts(response.data.allPosts);
   };
@@ -20,22 +21,6 @@ const Home = () => {
   const getProfileOfUser = async () => {
     const response = await axios.get("/api/getProfile");
     setUserProfile(response.data.user);
-  };
-
-  useEffect(() => {
-    setLoginHandler(isAutheticated());
-  }, []);
-
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    try {
-      const data = await axios.get("/api/logOut");
-      console.log("data", data);
-      toast.success(data.data.message);
-      setLoginHandler("");
-    } catch (error) {
-      toast.error(error);
-    }
   };
 
   const inputHandler = async (e) => {
@@ -49,9 +34,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getData();
     getProfileOfUser();
-  }, [allPosts.length]);
+    getData();
+  }, [allPosts]);
 
   return (
     <div className="text-white h-full">
@@ -77,7 +62,7 @@ const Home = () => {
             </button>
           </div>
           <div className="flex flex-wrap gap-4">
-            {allPosts.length > 0 &&
+            {allPosts &&
               allPosts.map((post) => {
                 return <Post post={post} key={post._id} />;
               })}
@@ -86,7 +71,7 @@ const Home = () => {
         <div className="right w-3/12 border-l-[1px] border-zinc-600 h-full px-3">
           <div className="p-1 bg-zinc-500 rounded-md flex gap-3 items-center">
             <p className="px-2 bg-zinc-600 rounded-md">
-              {userProfile && userProfile.name}
+              {userProfile && userProfile.name.split('')[0]}
             </p>
             <p>{userProfile && userProfile.email}</p>
           </div>

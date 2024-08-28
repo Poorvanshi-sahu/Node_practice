@@ -5,46 +5,12 @@ import { toast } from 'sonner';
 import { useMyContext } from '../contextAPI';
 
 const Login = () => {
-  const {isLogIn, setLoginHandler} = useMyContext()
-
-  const [formData, setFormData] = useState({
-    email:"",
-    password:""
-  })
-
-  const inputHandler = (e)=>{
-      const obj = {}
-      obj[e.target.name] = e.target.value
-
-      let updatedFormData = {...formData, ...obj}
-      setFormData(updatedFormData)
-  }
+  const {isLogIn, SubmitFormHandler, inputHandler, formData} = useMyContext()
 
   useEffect(()=>{
     
   },[formData])
 
-  const SubmitFormHandler = async(e)=>{
-      e.preventDefault();
-      
-      const data = await axios.post("/api/login",{...formData})
-      const user = data.data.user;      
-      const message = data.data.message
-      const token = data.data.token
-
-      console.log(data);
-      
-      if(!user){
-        toast.error(message,{
-          position:"top-center"
-        })
-      }
-      setLoginHandler(token)
-      setFormData({
-        email:"",
-        password:""
-      })
-  }
 
   return (
     <div className='h-screen w-full flex justify-center items-center'>
